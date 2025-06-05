@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlashPoint Electrical Safety Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #101820, #2c3e50);
+      color: #ecf0f1;
+    }
+    header {
+      background: #e94e77;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.5em;
+      letter-spacing: 2px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      background: #1e2a38;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 20px;
+      color: #ecdbba;
+    }
+    select, input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      margin-top: 8px;
+      font-size: 1em;
+      background-color: #34495e;
+      color: #ecf0f1;
+    }
+    table {
+      width: 100%;
+      margin-top: 30px;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 14px;
+      border-bottom: 1px solid #7f8c8d;
+    }
+    th {
+      background-color: #34495e;
+      text-align: left;
+    }
+    tr:hover {
+      background-color: #2c3e50;
+    }
+    .problem {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+    .widget {
+      margin-top: 20px;
+      padding: 15px;
+      border-left: 5px solid #e94e77;
+      background: #273746;
+      border-radius: 6px;
+    }
+    .widget i {
+      margin-right: 10px;
+      color: #f39c12;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><i class="fas fa-bolt"></i> FlashPoint Safety - Inspection Dashboard</h1>
+  </header>
+
+  <div class="container">
+    <div class="widget">
+      <i class="fas fa-info-circle"></i>
+      Welcome to the FlashPoint NFPA 70B Field Interface. Search equipment, track problems, and impress the hell out of inspectors.
+    </div>
+
+    <label for="locationSelect">Select Location:</label>
+    <select id="locationSelect" onchange="filterByLocation()">
+      <option value="">-- Select --</option>
+      <option value="Extrusion">Extrusion</option>
+      <option value="Water Treatment">Water Treatment</option>
+      <option value="MSB3-4 RM">MSB3-4 RM</option>
+    </select>
+
+    <label for="search">Search Equipment or ID:</label>
+    <input type="text" id="search" placeholder="Enter name or ID..." onkeyup="filterTable()">
+
+    <table id="inspectionTable">
+      <thead>
+        <tr>
+          <th>ID#</th>
+          <th>Location</th>
+          <th>Equipment Name</th>
+          <th>Type</th>
+          <th>Voltage</th>
+          <th>Problem</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-location="Extrusion">
+          <td>100101</td><td>MSB-2 ELEC. RM</td><td>MSB-2-1</td><td>Switchgear</td><td>480</td><td class="problem"></td>
+        </tr>
+        <tr data-location="Extrusion">
+          <td>100105</td><td>MSB-2 ELEC. RM</td><td>SW-4</td><td>Panel</td><td>208</td><td class="problem">Metallic fittings need insulators</td>
+        </tr>
+        <tr data-location="Water Treatment">
+          <td>100371</td><td>Exterior</td><td>Pump 4</td><td>DSC</td><td>480</td><td class="problem"></td>
+        </tr>
+        <tr data-location="MSB3-4 RM">
+          <td>100404</td><td>North west</td><td>MSB-4</td><td>SWGR</td><td>480</td><td class="problem"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function filterByLocation() {
+      const location = document.getElementById('locationSelect').value;
+      const rows = document.querySelectorAll('#inspectionTable tbody tr');
+      rows.forEach(row => {
+        row.style.display = (!location || row.dataset.location === location) ? '' : 'none';
+      });
+    }
+
+    function filterTable() {
+      const query = document.getElementById('search').value.toLowerCase();
+      const rows = document.querySelectorAll('#inspectionTable tbody tr');
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>
