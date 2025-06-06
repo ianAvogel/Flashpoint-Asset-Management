@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Inspection Data</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #121212;
+      color: #f0f0f0;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      color: #ff7f00;
+    }
+    input[type="file"] {
+      margin: 20px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+    pre {
+      background-color: #1f1f1f;
+      padding: 1rem;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 800px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #e94e77;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ff6b99;
+    }
+  </style>
+</head>
+<body>
+  <h1>📂 Upload Inspection CSV</h1>
+  <input type="file" id="csvFile" accept=".csv" />
+  <pre id="output">No file uploaded.</pre>
+  <button onclick="continueToDashboard()">Continue to Dashboard</button>
+
+  <script>
+    function parseCSV(text) {
+      const lines = text.trim().split('\n');
+      const headers = lines[0].split(',');
+      return lines.slice(1).map(row => {
+        const values = row.split(',');
+        let entry = {};
+        headers.forEach((header, i) => entry[header.trim()] = values[i]?.trim() || '');
+        return entry;
+      });
+    }
+
+    document.getElementById('csvFile').addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const text = e.target.result;
+        const jsonData = parseCSV(text);
+        localStorage.setItem('flashpointData', JSON.stringify(jsonData));
+        document.getElementById('output').textContent = JSON.stringify(jsonData, null, 2);
+      };
+      reader.readAsText(file);
+    });
+
+    function continueToDashboard() {
+      window.location.href = 'dashboard.html';
+    }
+  </script>
+</body>
+</html>

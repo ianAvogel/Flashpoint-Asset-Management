@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlashPoint Asset List</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #121212;
+      color: #ffffff;
+      padding: 2rem;
+    }
+    h1 {
+      color: #ff7f00;
+      text-align: center;
+    }
+    input[type="text"] {
+      display: block;
+      margin: 1rem auto;
+      padding: 0.5rem;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 5px;
+      border: none;
+    }
+    table {
+      width: 100%;
+      margin-top: 1rem;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 0.75rem;
+      text-align: left;
+    }
+    th {
+      background-color: #1e1e1e;
+      color: #ff7f00;
+    }
+    tr:hover {
+      background-color: #2a2a2a;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 FlashPoint Asset List</h1>
+  <input type="text" id="searchBox" placeholder="Search asset by name, number, or type..." />
+  <table id="assetTable">
+    <thead></thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const data = JSON.parse(localStorage.getItem('flashpointData')) || [];
+    const headers = Object.keys(data[0] || {});
+    const thead = document.querySelector('#assetTable thead');
+    const tbody = document.querySelector('#assetTable tbody');
+
+    function buildTableRows(rows) {
+      tbody.innerHTML = '';
+      rows.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        headers.forEach(h => {
+          const td = document.createElement('td');
+          td.textContent = item[h];
+          tr.appendChild(td);
+        });
+        tr.addEventListener('click', () => {
+          localStorage.setItem('selectedAsset', JSON.stringify(item));
+          window.location.href = 'asset.html';
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    const headerRow = document.createElement('tr');
+    headers.forEach(h => {
+      const th = document.createElement('th');
+      th.textContent = h;
+      headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    buildTableRows(data);
+
+    document.getElementById('searchBox').addEventListener('input', function () {
+      const term = this.value.toLowerCase();
+      const filtered = data.filter(row =>
+        Object.values(row).some(val => val.toLowerCase().includes(term))
+      );
+      buildTableRows(filtered);
+    });
+  </script>
+</body>
+</html>
